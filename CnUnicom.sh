@@ -405,6 +405,13 @@ function telegrambot() {
     curl -m 10 -sX POST "https://api.telegram.org/bot$token/sendMessage" -d "chat_id=$chat_id&text=$(cat $formatsendinfo_file)" >/dev/null
 }
 
+function jwks123push() {
+    # jwks123 一键免费推送信息到手机
+    echo ${all_parameter[*]} | grep -qE "jwks123token@[a-zA-Z0-9:_-]+" && jwks123token="$(echo ${all_parameter[*]} | grep -oE "jwks123token@[a-zA-Z0-9:_-]+" | cut -f2 -d@)" || return 0
+    echo && echo starting jwks123push...
+    curl -L -m 10 -sX POST "https://push.jwks123.cn/to/"  --data "{\"token\":\"$jwks123token\",\"msg\":\"$(cat $formatsendinfo_file)\"}" >/dev/null
+}
+
 function serverchan() {
     # serverchan旧版通知消息: sckey@************
     echo ${all_parameter[*]} | grep -qE "sckey@[a-zA-Z0-9:_-]+" && sckey="$(echo ${all_parameter[*]} | grep -oE "sckey@[a-zA-Z0-9:_-]+" | cut -f2 -d@)" || return 0
@@ -433,6 +440,7 @@ function main() {
         otherinfo
         freescoregift
         # 通知
+        jwks123push
         formatsendinfo
         telegrambot
         serverchan
